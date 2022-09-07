@@ -1,25 +1,19 @@
 import React from "react";
 
-function showallfilm()
-{
-    let filmDiv = document.getElementById('filmTable')
-    fetch('http://localhost:8080/Home/RandomEnemyPokeFilm', {method: `GET`})
-    .then(res => res.json())
-    .then(films=>
-        {
-            alert(films);
-        })
+class Home extends React.Component{
+    render(){
+        return(
+            <div>
+                <h1>Home</h1>
+            </div>
+        );
+    }
 }
 
-function Home(){
+function App(){
     return(
-        <div>
-            <h1>
-                Home
-            </h1>
-            <button onClick={showallfilm}>CLICK ME</button>
-        </div>
+        <Home />
     )
 }
 
-export default Home;
+export default App;
