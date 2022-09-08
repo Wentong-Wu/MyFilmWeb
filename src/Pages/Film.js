@@ -118,8 +118,11 @@ const App = () => {
         <div>
             {err && <h2>{err}</h2>}
             {isLoading && <h2>Loading...</h2>}
+            
+            {data ?
+            <>
             <Film film={data}/>
-            {/* {data ? data.map((val,key)=>{
+            {data.map((val,key)=>{
                 console.log(val)
                 return(
                     <tr key={key}>
@@ -128,7 +131,10 @@ const App = () => {
                         <td>{val.description}</td>
                     </tr>
                 )
-            }): <h1>HELLO</h1>} */}
+            })}
+            </>
+            : <h1>HELLO</h1>}
+            
         </div>
     );
 };
