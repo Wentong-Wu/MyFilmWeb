@@ -1,47 +1,138 @@
 import React, {useEffect, useState} from "react";
+import axios from "axios";
 
-function Fetchdata(){
-    const [data, setData] = useState(null);
-    let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
-    useEffect(() => {
-        fetch(`http://localhost:8080/Home/GetPokeFilm/${id}`, {method: `GET`})
-            .then((res) => res.json())
-            .then((filmData) => {
-                setData({
-                    film_id : filmData.film_id,
-                    title : filmData.title,
-                    description : filmData.description,
-                });
-    
-            });
-    });
-    return data;
+class FilmRow extends React.Component{
+    render(){
+        return(
+            <tr>
+                <td>{this.props.film.title}</td>
+            </tr>
+        )
+    }
 }
 
-class Film extends React.Component{
+class SearchBar extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    }
+    handleFilterTextChange(e){
+        this.props.onFilterTextChange(e.target.value);
+    }
     render(){
-        const film = this.props.filmdata;
         return(
-            <div>
-                <h1>Film</h1>
-                {film ? (
-                <h2>{film.film_id}</h2>
-                ): <></>}
-                {film ? (
-                <h2>{film.title}</h2>
-                ): <></>}
-                {film ? (
-                <h2>{film.description}</h2>
-                ): <></>}
-            </div>
+            <form>
+                <input 
+                    type="text"
+                    placeholder="Search..."
+                    value={this.props.filterText}
+                    onChange={this.handleFilterTextChange}
+                />
+            </form>
         );
     }
 }
 
-function App(){
-    return(
-        <Film filmdata={Fetchdata()}/>
-    )
+class FilmTable extends React.Component{
+    render(){
+        const filterText = this.props.filterText;
+        const rows=[];
+        this.props.film.forEach((films) => {
+            if(films.title.indexOf(filterText) === -1){
+                return;
+            }
+            rows.push(
+                <FilmRow 
+                    film={films}
+                    key={films.title}
+                />
+            )
+        })
+        return(
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        )
+    }
 }
+
+class Film extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            filterText:''
+        }
+        this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    }
+    handleFilterTextChange(filterText){
+        this.setState({
+            filterText:filterText
+        })
+    }
+    render(){
+        return(
+            <div>
+                <SearchBar 
+                    filterText={this.state.filterText}
+                    onFilterTextChange={this.handleFilterTextChange}
+                />
+                <FilmTable 
+                    film={this.props.film}
+                    filterText={this.state.filterText}
+                />  
+            </div>
+        );
+    }
+};
+
+const App = () => {
+    const [data, setData] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [err, setErr] = useState('');
+
+    const handleClickAll = async () => {
+        setIsLoading(true);
+        try{
+            const {data} = await axios.get(`http://localhost:8080/Home/allFilms`, {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+            console.log('data is: ', JSON.stringify(data, null, 4));
+            setData(data);
+        }catch(err){
+            setErr(err.message);
+        }finally{
+            setIsLoading(false);
+        }
+    };
+    useEffect(()=>{
+        handleClickAll();
+    },[])
+    return(
+        <div>
+            {err && <h2>{err}</h2>}
+            {isLoading && <h2>Loading...</h2>}
+            <Film film={data}/>
+            {/* {data ? data.map((val,key)=>{
+                console.log(val)
+                return(
+                    <tr key={key}>
+                        <td>{val.film_id}</td>
+                        <td>{val.title}</td>
+                        <td>{val.description}</td>
+                    </tr>
+                )
+            }): <h1>HELLO</h1>} */}
+        </div>
+    );
+};
+
+
 
 export default App;

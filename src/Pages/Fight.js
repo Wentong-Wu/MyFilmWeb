@@ -6,7 +6,7 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
 
-    const handleClick = async () => {
+    const handleClickRandom = async () => {
         setIsLoading(true);
         let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
         try{
@@ -23,15 +23,18 @@ const App = () => {
             setIsLoading(false);
         }
     };
+
     console.log(data);
     return(
         <div>
             {err && <h2>{err}</h2>}
-            <button onClick={handleClick}>Get A Random Film</button>
+            <button onClick={handleClickRandom}>Get A Random Film</button>
             {isLoading && <h2>Loading...</h2>}
-            <h2>{data.film_id}</h2>
-            <h2>{data.title}</h2>
-            <h2>{data.description}</h2>
+            <tr>
+                <td>{data.film_id}</td>
+                <td>{data.title}</td>
+                <td>{data.description}</td>
+            </tr>
         </div>
     );
 };
