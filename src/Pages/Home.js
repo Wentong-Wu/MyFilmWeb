@@ -1,47 +1,46 @@
-import React, { useState} from "react";
+import React, { useEffect, useState} from "react";
+import axios from "axios";
 
-function Fetchdata(){
-    const [data, setData] = useState(null);
-    let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
 
-        fetch(`http://localhost:8080/Home/GetPokeFilm/${id}`, {method: `GET`})
-            .then((res) => res.json())
-            .then((filmData) => {
-                setData({
-                    film_id : filmData.film_id,
-                    title : filmData.title,
-                    description : filmData.description,
-                });
-    
+
+const App = () => {
+    const [data, setData] = useState({data:[]});
+    const [isLoading, setIsLoading] = useState(false);
+    const [err, setErr] = useState('');
+
+    const handleClickRandom = async () => {
+        setIsLoading(true);
+        let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
+        try{
+            const {data} = await axios.get(`http://localhost:8080/Home/ChooseFilm/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                },
             });
-
-    return data;
-}
-
-class Home extends React.Component{
-    render(){
-        const film = this.props.filmdata;
-        return(
-            <div>
-                <h1>Film</h1>
-                {film ? (
-                <h2>{film.film_id}</h2>
-                ): <></>}
-                {film ? (
-                <h2>{film.title}</h2>
-                ): <></>}
-                {film ? (
-                <h2>{film.description}</h2>
-                ): <></>}
-            </div>
-        );
-    }
-}
-
-function App(){
+            console.log('data is: ', JSON.stringify(data, null, 4));
+            setData(data);
+        }catch(err){
+            setErr(err.message);
+        }finally{
+            setIsLoading(false);
+        }
+    };
+    useEffect(()=>{
+        handleClickRandom();
+    },[])
+    console.log(data);
     return(
-        <Home filmdata={Fetchdata()}/>
-    )
-}
+        <div>
+            {err && <h2>{err}</h2>}
+            <button onClick={handleClickRandom}>Get A Random Film</button>
+            {isLoading && <h2>Loading...</h2>}
+            <tr>
+                <td style={{"border":"1px solid"}}>{data.film_id}</td>
+                <td style={{"border":"1px solid"}}>{data.title}</td>
+                <td style={{"border":"1px solid"}}>{data.description}</td>
+            </tr>
+        </div>
+    );
+};
 
 export default App;

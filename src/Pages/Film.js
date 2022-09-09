@@ -3,9 +3,12 @@ import axios from "axios";
 
 class FilmRow extends React.Component{
     render(){
+        
         return(
             <tr>
-                <td>{this.props.film.title}</td>
+                <td style={{"border":"1px solid"}}>{this.props.film.title}</td>
+                <td style={{"border":"1px solid"}}>{this.props.film.category[0].name}</td>
+                <td style={{"border":"1px solid"}}>{this.props.film.rating}</td>
             </tr>
         )
     }
@@ -44,15 +47,20 @@ class FilmTable extends React.Component{
             rows.push(
                 <FilmRow 
                     film={films}
-                    key={films.title}
+                    key={films.film_id}
                 />
             )
         })
+        const tablestyle = {
+            "border": "1px solid"
+        };
         return(
-            <table>
-                <thead>
+            <table style={tablestyle}>
+                <thead style={tablestyle}>
                     <tr>
-                        <th>Title</th>
+                        <th style={tablestyle}>Title</th>
+                        <th style={tablestyle}>Category</th>
+                        <th style={tablestyle}>Rating</th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>
@@ -95,10 +103,10 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
 
-    const handleClickAll = async () => {
+    const handleClickAll = async (url) => {
         setIsLoading(true);
         try{
-            const {data} = await axios.get(`http://localhost:8080/Home/allFilms`, {
+            const {data} = await axios.get(url, {
                 headers: {
                     Accept: 'application/json',
                 },
@@ -112,29 +120,27 @@ const App = () => {
         }
     };
     useEffect(()=>{
-        handleClickAll();
+        handleClickAll(`http://localhost:8080/Home/allFilms`);
     },[])
     return(
         <div>
             {err && <h2>{err}</h2>}
             {isLoading && <h2>Loading...</h2>}
-            
             {data ?
-            <>
-            <Film film={data}/>
-            {data.map((val,key)=>{
-                console.log(val)
-                return(
-                    <tr key={key}>
-                        <td>{val.film_id}</td>
-                        <td>{val.title}</td>
-                        <td>{val.description}</td>
-                    </tr>
-                )
-            })}
-            </>
+                <>
+                    <Film film={data}/>
+                    {/* {data.map((val,key)=>{
+                        console.log(val)
+                        return(
+                            <tr key={key}>
+                                <td>{val.film_id}</td>
+                                <td>{val.title}</td>
+                                <td>{val.description}</td>
+                            </tr>
+                        )
+                    })}  */}
+                </>
             : <h1>HELLO</h1>}
-            
         </div>
     );
 };

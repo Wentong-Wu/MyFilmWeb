@@ -1,16 +1,17 @@
-import React, { useState} from "react";
+import React, { useEffect, useState} from "react";
 import axios from "axios";
 
+
+
 const App = () => {
-    const [data, setData] = useState({data:[]});
+    const [data, setData] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
 
     const handleClickRandom = async () => {
         setIsLoading(true);
-        let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
         try{
-            const {data} = await axios.get(`http://localhost:8080/Home/GetPokeFilm/${id}`, {
+            const {data} = await axios.get(`http://localhost:8080/Home/generateRandom`, {
                 headers: {
                     Accept: 'application/json',
                 },
@@ -23,18 +24,28 @@ const App = () => {
             setIsLoading(false);
         }
     };
-
+    useEffect(()=>{
+        handleClickRandom();
+    },[])
     console.log(data);
     return(
         <div>
             {err && <h2>{err}</h2>}
             <button onClick={handleClickRandom}>Get A Random Film</button>
             {isLoading && <h2>Loading...</h2>}
-            <tr>
-                <td>{data.film_id}</td>
-                <td>{data.title}</td>
-                <td>{data.description}</td>
-            </tr>
+            {data ? 
+            <>
+                {data.map((val,key) =>{
+                return(
+                    <tr key={key}>
+                        <td style={{"border":"1px solid"}}>{val.film_id}</td>
+                        <td style={{"border":"1px solid"}}>{val.title}</td>
+                        <td style={{"border":"1px solid"}}>{val.description}</td>
+                    </tr>
+                )
+                })}
+            </>
+            : <></>}
         </div>
     );
 };
