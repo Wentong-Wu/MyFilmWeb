@@ -1,7 +1,27 @@
 import React, { useEffect, useState} from "react";
 import axios from "axios";
 
-
+class PokeFilm extends React.Component(){
+    constructor(props){
+        super(props)
+        this.state={
+            
+        }
+    }
+    render(){
+        return(
+            <div>
+                {this.props.data.map((val,key) =>{
+                    <tr key={key}>
+                        <td style={{"border":"1px solid"}}>{val.film_id}</td>
+                        <td style={{"border":"1px solid"}}>{val.title}</td>
+                        <td style={{"border":"1px solid"}}>{val.description}</td>
+                    </tr>
+                })}
+            </div>
+        )
+    }
+}
 
 const App = () => {
     const [data, setData] = useState('');
@@ -35,15 +55,7 @@ const App = () => {
             {isLoading && <h2>Loading...</h2>}
             {data ? 
             <>
-                {data.map((val,key) =>{
-                return(
-                    <tr key={key}>
-                        <td style={{"border":"1px solid"}}>{val.film_id}</td>
-                        <td style={{"border":"1px solid"}}>{val.title}</td>
-                        <td style={{"border":"1px solid"}}>{val.description}</td>
-                    </tr>
-                )
-                })}
+                <PokeFilm film={data}/>
             </>
             : <></>}
         </div>

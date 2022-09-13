@@ -3,7 +3,6 @@ import axios from "axios";
 
 class FilmRow extends React.Component{
     render(){
-        
         return(
             <tr>
                 <td style={{"border":"1px solid"}}>{this.props.film.title}</td>
@@ -129,16 +128,6 @@ const App = () => {
             {data ?
                 <>
                     <Film film={data}/>
-                    {/* {data.map((val,key)=>{
-                        console.log(val)
-                        return(
-                            <tr key={key}>
-                                <td>{val.film_id}</td>
-                                <td>{val.title}</td>
-                                <td>{val.description}</td>
-                            </tr>
-                        )
-                    })}  */}
                 </>
             : <h1>HELLO</h1>}
         </div>

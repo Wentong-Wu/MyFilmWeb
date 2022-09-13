@@ -1,8 +1,6 @@
 import React, { useEffect, useState} from "react";
 import axios from "axios";
 
-
-
 const App = () => {
     const [data, setData] = useState({data:[]});
     const [isLoading, setIsLoading] = useState(false);
