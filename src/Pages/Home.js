@@ -10,7 +10,7 @@ const App = () => {
         setIsLoading(true);
         let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
         try{
-            const {data} = await axios.get(`http://localhost:8080/Home/ChooseFilm/${id}`, {
+            const {data} = await axios.get(`https://sakilaapp-1663062389506.azurewebsites.net/Home/ChooseFilm/${id}`, {
                 headers: {
                     Accept: 'application/json',
                 },
@@ -23,10 +23,6 @@ const App = () => {
             setIsLoading(false);
         }
     };
-    useEffect(()=>{
-        handleClickRandom();
-    },[])
-    console.log(data);
     return(
         <div>
             {err && <h2>{err}</h2>}

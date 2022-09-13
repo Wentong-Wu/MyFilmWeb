@@ -119,7 +119,7 @@ const App = () => {
         }
     };
     useEffect(()=>{
-        handleClickAll(`http://localhost:8080/Home/allFilms`);
+        handleClickAll(`https://sakilaapp-1663062389506.azurewebsites.net/Home/allFilms`);
     },[])
     return(
         <div>
@@ -129,7 +129,7 @@ const App = () => {
                 <>
                     <Film film={data}/>
                 </>
-            : <h1>HELLO</h1>}
+            : <></>}
         </div>
     );
 };
