@@ -5,7 +5,7 @@ class FilmRow extends React.Component{
     render(){
         return(
             <tr>
-                <td style={{"border":"1px solid"}}>{this.props.film.title}</td>
+                <td class="film_id_loaded" style={{"border":"1px solid"}}>{this.props.film.title}</td>
                 <td style={{"border":"1px solid"}}>{this.props.film.category[0].name}</td>
                 <td style={{"border":"1px solid"}}>{this.props.film.rating}</td>
             </tr>
@@ -83,7 +83,7 @@ class Film extends React.Component{
     }
     render(){
         return(
-            <div>
+            <div class="page-loaded">
                 <SearchBar 
                     filterText={this.state.filterText}
                     onFilterTextChange={this.handleFilterTextChange}

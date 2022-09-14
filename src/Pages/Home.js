@@ -23,16 +23,35 @@ const App = () => {
             setIsLoading(false);
         }
     };
+    useEffect(()=>{
+        handleClickRandom();
+    },[])
+    const tablestyle = {
+        "border": "1px solid"
+    };
     return(
         <div>
             {err && <h2>{err}</h2>}
             <button onClick={handleClickRandom}>Get A Random Film</button>
             {isLoading && <h2>Loading...</h2>}
-            <tr>
-                <td style={{"border":"1px solid"}}>{data.film_id}</td>
-                <td style={{"border":"1px solid"}}>{data.title}</td>
-                <td style={{"border":"1px solid"}}>{data.description}</td>
-            </tr>
+            <div class="page-loaded">
+                <table style={tablestyle}>
+                    <thead style={tablestyle}>
+                        <tr>
+                            <th style={tablestyle}>ID</th>
+                            <th style={tablestyle}>Title</th>
+                            <th style={tablestyle}>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="film_id_loaded" style={tablestyle}>{data.film_id}</td>
+                            <td style={tablestyle}>{data.title}</td>
+                            <td style={tablestyle}>{data.description}</td>
+                        </tr>
+                    </tbody>
+                </table>    
+            </div>
         </div>
     );
 };
