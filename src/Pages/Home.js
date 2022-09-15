@@ -6,9 +6,26 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
     const [hangman, setHangman] = useState('')
-    const [gameDisplay, setGameDisplay] = useState('')
+    const [playable, setPlayble] = useState(true);
+    const [correctLetters, setCorrectLetters] = useState([]);
+    const [wrongLetters, setWrongLetters] = useState([]);
 
+    function displayWord(hangman,correctLetters){
+        return(
+            <div>
+                {hangman.split('').map((letter, i) =>{
+                    return(
+                        <span key={i}>
+                            {correctLetters.includes(letter) ? letter:' _ '}
+                        </span>
+                    )
+                })}
+            </div>
+        )
+    }
     const handleClickRandom = async () => {
+        setCorrectLetters([])
+
         setIsLoading(true);
         let id = Math.floor(Math.random() * (1000 - 1 + 1) + 1)
         try{
@@ -20,42 +37,45 @@ const App = () => {
             console.log('data is: ', JSON.stringify(data, null, 4));
             setData(data);
             setHangman(data.title)
-            setGameDisplay("_ ".repeat(data.title.length))
         }catch(err){
             setErr(err.message);
         }finally{
             setIsLoading(false);
         }
     };
+    const handleKeyDown = event => {
+        const{key, keyCode} = event;
+        if(playable && keyCode >= 65 && keyCode <= 90){
+            const letter = key.toUpperCase();
+            if(hangman.includes(letter)){
+                if(!correctLetters.includes(letter)){
+                    //Spread the letters inside CorrectLetter and add the letter into it
+                    setCorrectLetters(currentLetters => [...currentLetters, letter]);
+                }
+            }
+            else{
+                if(!wrongLetters.includes(letter)){
+                    setWrongLetters(wrongLetter => [...wrongLetter, letter]);
+                }
+            }
+        }
+        if(!playable){
+            return(
+                <button>PlayAgain!</button>
+            )
+        }
+    }
     useEffect(()=>{
-        handleClickRandom();
-    },[])
-    const tablestyle = {
-        "border": "1px solid"
-    };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    },[correctLetters,wrongLetters,playable])
     return(
         <div>
             {err && <h2>{err}</h2>}
-            <button onClick={handleClickRandom}>Get A Random Film</button>
+            <button onClick={handleClickRandom}>Play</button>
             {isLoading && <h2>Loading...</h2>}
             <div class="page-loaded">
-                <table style={tablestyle}>
-                    <thead style={tablestyle}>
-                        <tr>
-                            <th style={tablestyle}>ID</th>
-                            <th style={tablestyle}>Title</th>
-                            <th style={tablestyle}>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="film_id_loaded" style={tablestyle}>{data.film_id}</td>
-                            <td style={tablestyle}>{data.title}</td>
-                            <td style={tablestyle}>{data.description}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h1>{gameDisplay}</h1>
+                <h1>{displayWord(hangman,correctLetters)}</h1>                
             </div>
         </div>
     );
