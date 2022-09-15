@@ -5,6 +5,8 @@ const App = () => {
     const [data, setData] = useState({data:[]});
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('');
+    const [hangman, setHangman] = useState('')
+    const [gameDisplay, setGameDisplay] = useState('')
 
     const handleClickRandom = async () => {
         setIsLoading(true);
@@ -17,6 +19,8 @@ const App = () => {
             });
             console.log('data is: ', JSON.stringify(data, null, 4));
             setData(data);
+            setHangman(data.title)
+            setGameDisplay("_ ".repeat(data.title.length))
         }catch(err){
             setErr(err.message);
         }finally{
@@ -50,7 +54,8 @@ const App = () => {
                             <td style={tablestyle}>{data.description}</td>
                         </tr>
                     </tbody>
-                </table>    
+                </table>
+                <h1>{gameDisplay}</h1>
             </div>
         </div>
     );
